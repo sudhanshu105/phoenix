@@ -37,6 +37,21 @@ The server will run on `http://localhost:3000`.
 
 ### Gadget Inventory
 - **GET /gadgets**: Retrieve a list of all gadgets with a random mission success probability.
+  - **Query Parameters**: 
+    - `status`: Filter gadgets by their status.
+  - **Response Example**:
+    ```json
+    [
+      {
+        "id": "some-uuid",
+        "name": "Gadget Name",
+        "codename": "The Nightingale",
+        "status": "Available",
+        "missionSuccessProbability": 75
+      }
+    ]
+    ```
+
 - **POST /gadgets**: Add a new gadget to the inventory.
   - **Request Body**: 
     ```json
@@ -44,6 +59,16 @@ The server will run on `http://localhost:3000`.
       "name": "Gadget Name"
     }
     ```
+  - **Response Example**:
+    ```json
+    {
+      "id": "some-uuid",
+      "name": "Gadget Name",
+      "codename": "The Kraken",
+      "status": "Available"
+    }
+    ```
+
 - **PATCH /gadgets/:id**: Update an existing gadget's information.
   - **Request Body**: 
     ```json
@@ -52,8 +77,33 @@ The server will run on `http://localhost:3000`.
       "status": "Available"
     }
     ```
+  - **Response Example**:
+    ```json
+    {
+      "id": "some-uuid",
+      "name": "Updated Gadget Name",
+      "status": "Available"
+    }
+    ```
+
 - **DELETE /gadgets/:id**: Mark a gadget as "Decommissioned."
+  - **Response Example**:
+    ```json
+    {
+      "id": "some-uuid",
+      "status": "Decommissioned",
+      "decommissioned_at": "2023-10-01T12:00:00Z"
+    }
+    ```
+
 - **POST /gadgets/:id/self-destruct**: Trigger the self-destruct sequence for a specific gadget.
+  - **Response Example**:
+    ```json
+    {
+      "message": "Self-destruct sequence initiated",
+      "confirmationCode": 1234
+    }
+    ```
 
 ## License
 This project is licensed under the MIT License.
