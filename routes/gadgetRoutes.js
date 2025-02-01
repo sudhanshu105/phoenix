@@ -1,5 +1,5 @@
 import express from 'express';
-import Gadget from '../models/Gadget.js';
+import Gadget from '../models/Gadget.js'; 
 import authenticateToken from '../middleware/auth.js'; 
 
 const router = express.Router();
@@ -12,8 +12,15 @@ const generateCodename = () => {
 };
 
 // GET /gadgets
-router.get('/', authenticateToken, (req, res) => {
-    const gadgetsWithProbability = gadgets.map(gadget => ({
+router.get('/',authenticateToken, (req, res) => {
+    const { status } = req.query; // Get status from query parameters
+    let filteredGadgets = gadgets;
+
+    if (status) {
+        filteredGadgets = gadgets.filter(gadget => gadget.status.toLowerCase() === status.toLowerCase());
+    }
+
+    const gadgetsWithProbability = filteredGadgets.map(gadget => ({
         ...gadget,
         missionSuccessProbability: Math.floor(Math.random() * 100) + 1 // Random percentage
     }));
@@ -21,7 +28,7 @@ router.get('/', authenticateToken, (req, res) => {
 });
 
 // POST /gadgets
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken,(req, res) => {
     const { name } = req.body;
     const newGadget = new Gadget(name);
     newGadget.codename = generateCodename(); // Assign a unique codename
@@ -57,7 +64,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
 });
 
 // POST /gadgets/:id/self-destruct
-router.post('/:id/self-destruct', authenticateToken, (req, res) => {
+router.post('/:id/self-destruct',authenticateToken, (req, res) => {
     const { id } = req.params;
     const confirmationCode = Math.floor(1000 + Math.random() * 9000); // Simulated confirmation code
     const gadget = gadgets.find(g => g.id === id);
