@@ -3,6 +3,11 @@
 ## Description
 This is a Node.js Express API for managing gadgets for the Impossible Missions Force (IMF). The API allows for secure management of gadgets, including adding, updating, retrieving, and decommissioning gadgets.
 
+#Deployment:
+Server is deployed on render. URL: https://pheonix-0404.onrender.com
+
+#Postman collection
+URL: https://www.postman.com/garuda-api/workspace/pheonix/collection/35349355-d3b47917-a8a7-4ce1-bf11-0e0596d9af04?action=share&creator=35349355
 ## Installation
 
 1. Clone the repository:
