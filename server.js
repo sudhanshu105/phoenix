@@ -2,8 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
-import pkg from 'pg'; // Use default import
-const { Client } = pkg; // Destructure Client from the imported package
+import pkg from 'pg';
+const { Client } = pkg; 
 import gadgetRoutes from './routes/gadgetRoutes.js';
 import authRoutes from './routes/authRoutes.js'; // Importing authentication routes
 
