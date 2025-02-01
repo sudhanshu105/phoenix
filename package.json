@@ -1,24 +1,16 @@
 {
-  "name": "imf-gadget-api",
-  "version": "1.0.0",
-  "description": "API for managing IMF gadgets",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "dotenv": "^10.0.0",
-    "express": "^4.21.2",
-    "imf-gadget-api": "file:",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.13.1",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.5",
-    "uuid": "^11.0.5"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+    "name": "pheonix",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "type": "module",
+    "dependencies": {
+        "pheonix": "file:"
+    }
 }

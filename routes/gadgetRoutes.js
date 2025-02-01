@@ -1,57 +1,71 @@
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
-const Gadget = require('../models/Gadget');
+import express from 'express';
+import Gadget from '../models/Gadget.js';
+import authenticateToken from '../middleware/auth.js'; 
 
 const router = express.Router();
+const gadgets = [];
 
-// GET /gadgets - Retrieve a list of all gadgets
-router.get('/', async (req, res) => {
-  try {
-    const gadgets = await Gadget.findAll();
+// Function to generate a unique codename
+const generateCodename = () => {
+    const codenames = ["The Nightingale", "The Kraken", "The Phantom", "The Shadow", "The Falcon"];
+    return codenames[Math.floor(Math.random() * codenames.length)];
+};
+
+// GET /gadgets
+router.get('/', authenticateToken, (req, res) => {
     const gadgetsWithProbability = gadgets.map(gadget => ({
-      ...gadget.toJSON(),
-      missionSuccessProbability: Math.floor(Math.random() * 100) + 1,
+        ...gadget,
+        missionSuccessProbability: Math.floor(Math.random() * 100) + 1 // Random percentage
     }));
     res.json(gadgetsWithProbability);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve gadgets' });
-  }
 });
 
-// POST /gadgets - Add a new gadget to the inventory
-router.post('/', async (req, res) => {
-  const { name } = req.body;
-  const newGadget = await Gadget.create({ name });
-  res.status(201).json(newGadget);
+// POST /gadgets
+router.post('/', authenticateToken, (req, res) => {
+    const { name } = req.body;
+    const newGadget = new Gadget(name);
+    newGadget.codename = generateCodename(); // Assign a unique codename
+    gadgets.push(newGadget);
+    res.status(201).json(newGadget);
 });
 
-// PATCH /gadgets/:id - Update an existing gadget's information
-router.patch('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, status } = req.body;
-  const gadget = await Gadget.findByPk(id);
-  if (gadget) {
-    gadget.name = name || gadget.name;
-    gadget.status = status || gadget.status;
-    await gadget.save();
-    res.json(gadget);
-  } else {
-    res.status(404).json({ error: 'Gadget not found' });
-  }
+// PATCH /gadgets/:id
+router.patch('/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const { name, status } = req.body;
+    const gadget = gadgets.find(g => g.id === id);
+    if (gadget) {
+        gadget.name = name || gadget.name;
+        gadget.status = status || gadget.status;
+        res.json(gadget);
+    } else {
+        res.status(404).json({ message: 'Gadget not found' });
+    }
 });
 
-// DELETE /gadgets/:id - Mark a gadget as decommissioned
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  const gadget = await Gadget.findByPk(id);
-  if (gadget) {
-    gadget.status = 'Decommissioned';
-    gadget.decommissionedAt = new Date();
-    await gadget.save();
-    res.json(gadget);
-  } else {
-    res.status(404).json({ error: 'Gadget not found' });
-  }
+// DELETE /gadgets/:id
+router.delete('/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const gadget = gadgets.find(g => g.id === id);
+    if (gadget) {
+        gadget.status = 'Decommissioned';
+        gadget.decommissionedAt = new Date(); // Add timestamp for decommissioning
+        res.json(gadget);
+    } else {
+        res.status(404).json({ message: 'Gadget not found' });
+    }
 });
 
-module.exports = router;
+// POST /gadgets/:id/self-destruct
+router.post('/:id/self-destruct', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const confirmationCode = Math.floor(1000 + Math.random() * 9000); // Simulated confirmation code
+    const gadget = gadgets.find(g => g.id === id);
+    if (gadget) {
+        res.json({ message: 'Self-destruct sequence initiated', confirmationCode });
+    } else {
+        res.status(404).json({ message: 'Gadget not found' });
+    }
+});
+
+export default router;
